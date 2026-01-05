@@ -95,24 +95,21 @@ app.post("/login", (req, res) => {
       const user = results[0];
 
       /* ======================
-         FRONTEND REDIRECT FIX
+         REDIRECT URL LOGIC
       ====================== */
       const FRONTEND_BASE_URL = "https://pixeltruth.com/mis";
-       
-       const role = data.user.Role;
-       const department = data.user.Department;
-       let redirectUrl = FRONTEND_BASE_URL + "/dashboard.html"; // default
-       
-       if (role === "HR") {
-          redirectUrl = `${FRONTEND_BASE_URL}/HR/${department}/HR_dashboard.html`;
-       }
-       else if (role === "Team_Lead") {
-          redirectUrl = `${FRONTEND_BASE_URL}/TL/${department}/TL_dashboard.html`;
-       }
-       else {
-          redirectUrl = `${FRONTEND_BASE_URL}/${department}/dashboard.html`;
-       }
 
+      const role = user.Role;
+      const department = user.Department;
+
+      let redirectUrl = `${FRONTEND_BASE_URL}/${department}/dashboard.html`;
+
+      if (role === "HR") {
+        redirectUrl = `${FRONTEND_BASE_URL}/HR/${department}/HR_dashboard.html`;
+      } 
+      else if (role === "Team_Lead") {
+        redirectUrl = `${FRONTEND_BASE_URL}/TL/${department}/TL_dashboard.html`;
+      }
 
       return res.json({
         success: true,
