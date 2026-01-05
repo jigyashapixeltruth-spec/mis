@@ -12,21 +12,28 @@ app.use(express.json());
 
 /* ======================
    Database Connection
-   (Railway MySQL via DATABASE_URL)
 ====================== */
+let db = null;
+
 if (!process.env.DATABASE_URL) {
   console.error("❌ DATABASE_URL not found in environment variables");
-}
+} else {
+  try {
+    db = mysql.createConnection(process.env.DATABASE_URL);
 
-const db = mysql.createConnection(process.env.DATABASE_URL);
-
-db.connect((err) => {
-  if (err) {
-    console.error("❌ DB connection failed:", err.message);
-  } else {
-    console.log("✅ DB connected successfully");
+    db.connect((err) => {
+      if (err) {
+        console.error("❌ DB connection failed:", err.message);
+        db = null;
+      } else {
+        console.log("✅ DB connected successfully");
+      }
+    });
+  } catch (e) {
+    console.error("❌ DB init error:", e.message);
+    db = null;
   }
-});
+}
 
 /* ======================
    Health Check
@@ -39,6 +46,13 @@ app.get("/", (req, res) => {
    LOGIN API
 ====================== */
 app.post("/login", (req, res) => {
+  if (!db) {
+    return res.status(500).json({
+      success: false,
+      message: "Database not connected"
+    });
+  }
+
   const { User_Mail, Password, Role, Department } = req.body;
 
   console.log("🔐 Login request:", req.body);
@@ -73,7 +87,7 @@ app.post("/login", (req, res) => {
 
       console.log("📦 DB Result:", results);
 
-      if (results.length === 0) {
+      if (!results || results.length === 0) {
         return res.json({
           success: false,
           message: "Invalid credentials"
