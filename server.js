@@ -101,7 +101,7 @@ app.post("/login", (req, res) => {
       let redirectUrl = `${FRONTEND_BASE_URL}/dashboard.html`;
 
       if (user.Role === "HR") {
-        redirectUrl = `${FRONTEND_BASE_URL}/HR_dashboard.html`;
+        redirectUrl = `${FRONTEND_BASE_URL}/dashboard.html`;
       } else if (user.Role === "Team_Lead") {
         redirectUrl = `${FRONTEND_BASE_URL}/TL_dashboard.html`;
       }
