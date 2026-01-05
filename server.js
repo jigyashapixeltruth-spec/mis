@@ -98,7 +98,7 @@ app.post("/login", (req, res) => {
          FRONTEND REDIRECT FIX
       ====================== */
       const FRONTEND_BASE_URL = "https://pixeltruth.com/mis";
-      let redirectUrl = `${FRONTEND_BASE_URL}/dashboard.html`;
+      let redirectUrl = `${FRONTEND_BASE_URL}/HR_dashboard.html`;
 
       if (user.Role === "HR") {
         redirectUrl = `${FRONTEND_BASE_URL}/dashboard.html`;
