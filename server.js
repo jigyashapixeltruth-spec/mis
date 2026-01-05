@@ -14,18 +14,18 @@ app.use(express.json());
    Database Connection
 ====================== */
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
+  host: process.env.DB_HOST || "metro.proxy.rlwy.net",
+  user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT
+  database: process.env.DB_NAME || "railway",
+  port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 14597
 });
 
 db.connect(err => {
   if (err) {
-    console.log("❌ DB connection failed:", err);
+    console.log("❌ DB connection failed:", err.message);
   } else {
-    console.log("✅ DB connected");
+    console.log("✅ DB connected successfully");
   }
 });
 
@@ -41,6 +41,8 @@ app.get("/", (req, res) => {
 ====================== */
 app.post("/login", (req, res) => {
   const { User_Mail, Password, Role, Department } = req.body;
+
+  console.log("LOGIN HIT:", req.body);
 
   if (!User_Mail || !Password || !Role || !Department) {
     return res.status(400).json({
@@ -62,12 +64,14 @@ app.post("/login", (req, res) => {
     [User_Mail, Password, Role, Department],
     (err, results) => {
       if (err) {
-        console.log("Login Error:", err);
+        console.log("❌ Login DB Error:", err.message);
         return res.status(500).json({
           success: false,
           message: "Server error"
         });
       }
+
+      console.log("DB RESULT:", results);
 
       if (results.length > 0) {
         return res.json({
