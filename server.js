@@ -85,8 +85,6 @@ app.post("/login", (req, res) => {
         });
       }
 
-      console.log("📦 DB Result:", results);
-
       if (!results || results.length === 0) {
         return res.json({
           success: false,
@@ -96,8 +94,21 @@ app.post("/login", (req, res) => {
 
       const user = results[0];
 
+      /* ======================
+         FRONTEND REDIRECT FIX
+      ====================== */
+      const FRONTEND_BASE_URL = "https://pixeltruth.com/mis";
+      let redirectUrl = `${FRONTEND_BASE_URL}/dashboard.html`;
+
+      if (user.Role === "HR") {
+        redirectUrl = `${FRONTEND_BASE_URL}/HR_dashboard.html`;
+      } else if (user.Role === "Team_Lead") {
+        redirectUrl = `${FRONTEND_BASE_URL}/TL_dashboard.html`;
+      }
+
       return res.json({
         success: true,
+        redirectUrl,
         user: {
           User_Name: user.User_Name,
           User_Mail: user.User_Mail,
